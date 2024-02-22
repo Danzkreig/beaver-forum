@@ -21,17 +21,19 @@ let arr = [
     password: "robotdog330",
   },
 ];
-app.get("/", (request, response) => {
+app.get("/users", (request, response) => {
   response.json(arr);
+  response.sendStatus(200);
 });
-app.post("/", (request, response) => {
+app.post("/users", (request, response) => {
   arr.push(request.body);
-  console.log(arr);
+  response.sendStatus(200);
 });
-app.delete("/", (request, response) => {
-  let id = request.query.id;
-  arr = arr.filter((co) => co.id != id);
-  response.send(arr);
+app.delete("/users", (request, response) => {
+  let name = request.body.name;
+  arr = arr.filter((co) => co.name != name);
+  console.log(arr);
+  response.sendStatus(200);
 });
 app.listen(port, () => {
   console.log(`working on http://localhost:` + port);

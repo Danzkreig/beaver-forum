@@ -7,13 +7,14 @@ export default function Mario() {
   const [error, setError] = useState("");
   const [userdata, setUserdata] = useState([]);
   useEffect(() => {
-    const users = async () => {
-      const data = await fetch("http://localhost:8080/").then((response) =>
+    setInterval(() => {
+      fetch("http://localhost:8080/users").then((response) =>
         response.json().then((response) => setUserdata(response))
       );
-    };
-    setInterval(users, 3000);
-  }, [error]);
+      console.log("Working");
+    }, 4000),
+      [];
+  }, []);
   useEffect(() => {
     if (age < 13) {
       setError("You must be older then 13.");
@@ -31,7 +32,7 @@ export default function Mario() {
   });
   return (
     <div className="flex justify-center items-center w-screen h-screen flex-col gap-24">
-      <div className="w-1/5 h-1/5 bg-slate-300 rounded-lg flex items-center flex-col justify-around">
+      <div className="w-2/5 h-2/5 bg-slate-300 rounded-lg flex items-center flex-col justify-around">
         <h1>Sign Up!</h1>
         <div>
           <tag>Username:</tag>
@@ -87,7 +88,7 @@ export default function Mario() {
           className="bg-blue-700 rounded text-white pr-1 pl-1"
           onClick={() => {
             if (error === "") {
-              fetch("http://localhost:8080/", {
+              fetch("http://localhost:8080/users", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -108,10 +109,44 @@ export default function Mario() {
       <div className="flex flex-col gap-10">
         {userdata.map((profile) => {
           return (
-            <div className="flex flex-col h-16 bg-black pt-3 pb-3 text-white rounded items-center justify-center">
-              <h1>username: {profile.name} </h1>
-              <h1>age: {profile.age} </h1>
-              <h1>password: {profile.password} </h1>
+            <div className="flex flex-row ">
+              <div className="flex flex-col h-[150px] w-[150px] bg-black pt-3 pb-3 text-white rounded items-center justify-center ">
+                <div className="flex flex-row">
+                  <h1>username:</h1>
+                  <h1>{profile.name}</h1>
+                </div>
+                <div className="flex flex-row">
+                  <h1>age:</h1>
+                  <h1>{profile.age}</h1>
+                </div>
+                <div className="flex flex-row">
+                  <h1>password:</h1>
+                  <h1>{profile.password}</h1>
+                </div>
+              </div>
+              <div className="flex flex-col gap-4">
+                <button
+                  className="rounded bg-green-700 text-white p-2"
+                  onClick={() => {
+                    fetch("http://localhost:8080/users", {
+                      method: "DELETE",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        name: profile.name,
+                      }),
+                    });
+                    console.log("Deleted" + profile.name);
+                    setError("");
+                  }}
+                >
+                  DEL
+                </button>
+                <button className="rounded bg-green-700 text-white p-2">
+                  EDIT
+                </button>
+              </div>
             </div>
           );
         })}
