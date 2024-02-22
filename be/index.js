@@ -3,48 +3,36 @@ import cors from "cors";
 const app = express();
 const port = 8080;
 app.use(cors());
+app.use(express.json());
 let arr = [
   {
-    name: "Juliett",
+    name: "fafaa",
     age: 33,
-    Hobbies: ["Crack", "Meth", "Weed"],
-    id: 1,
+    password: "password",
   },
   {
-    name: "Romeo",
-    age: 21,
-    Hobbies: ["Letto", "Meth", "Weed"],
-    id: 2,
+    name: "ooo",
+    age: 16,
+    password: "newyork2011",
   },
   {
-    name: "Delta",
-    age: 27,
-    Hobbies: ["Arbeit", "Meth", "Weed"],
-    id: 3,
-  },
-  {
-    name: "Hotel",
-    age: 39,
-    Hobbies: ["Brod", "Meth", "Weed"],
-    id: 4,
+    name: "king",
+    age: 23,
+    password: "robotdog330",
   },
 ];
 app.get("/", (request, response) => {
   response.json(arr);
 });
 app.post("/", (request, response) => {
-  let packet = {}; // creates packet of info
-  packet.name = request.query.name;
-  packet.age = parseInt(request.query.age);
-  packet.id = parseInt(request.query.id);
-  arr.push(packet); // puts packet in array.
-  response.send(arr);
+  arr.push(request.body);
+  console.log(arr);
 });
 app.delete("/", (request, response) => {
   let id = request.query.id;
   arr = arr.filter((co) => co.id != id);
   response.send(arr);
 });
-app.app.listen(port, () => {
+app.listen(port, () => {
   console.log(`working on http://localhost:` + port);
 });
