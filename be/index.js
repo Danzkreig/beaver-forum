@@ -29,8 +29,9 @@ app.post("/", (request, response) => {
   console.log(arr);
 });
 app.delete("/", (request, response) => {
-  let id = request.query.id;
-  arr = arr.filter((co) => co.id != id);
+  let id = request.body.name;
+  console.log(id);
+  console.log(request.body);
   response.send(arr);
 });
 app.listen(port, () => {
