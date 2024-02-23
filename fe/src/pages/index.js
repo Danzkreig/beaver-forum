@@ -33,11 +33,11 @@ export default function Mario() {
   var editmode = false;
   return (
     <div className="flex justify-center items-center w-screen h-screen flex-col gap-24 from-blue-300 to-blue-700  bg-gradient-to-r">
-      <div className="w-2/5 h-2/5 bg-white rounded-lg flex items-center flex-col justify-around">
-        <h1 className="text-4xl text-blue-600">Sign Up!</h1>
+      <div className="w-2/5 h-2/5 bg-transparent rounded-lg flex items-center flex-col justify-around">
+        <h1 className="text-4xl text-blue-900">Sign Up!</h1>
         <div>
           <input
-            className="shadow-sm border-[1px] border-solid border-gray-400"
+            className="shadow-sm border-[1px] border-solid border-gray-400 rounded placeholder:pl-2"
             type="text"
             placeholder="Username"
             id="username"
@@ -48,7 +48,7 @@ export default function Mario() {
         </div>
         <div>
           <input
-            className="shadow-sm border-[1px] border-solid border-gray-400 w-44"
+            className="shadow-sm border-[1px] border-solid border-gray-400 rounded placeholder:pl-2 w-44"
             type="number"
             placeholder="Age"
             min="13"
@@ -61,7 +61,7 @@ export default function Mario() {
         </div>
         <div>
           <input
-            className="shadow-sm border-[1px] border-solid border-gray-400"
+            className="shadow-sm border-[1px] border-solid border-gray-400 rounded placeholder:pl-2"
             type="password"
             placeholder="Password"
             id="password"
@@ -72,7 +72,7 @@ export default function Mario() {
         </div>
         <div>
           <input
-            className="shadow-sm border-[1px] border-solid border-gray-400"
+            className="shadow-sm border-[1px] border-solid border-gray-400 rounded placeholder:pl-2"
             type="password"
             placeholder="Confirm Password"
             id="cpassword"
@@ -81,7 +81,10 @@ export default function Mario() {
             }}
           />
         </div>
-        <p className="text-red-500 text-sm" id="error">
+        <p
+          className="text-red-500 text-sm shadow rounded p-1 bg-black"
+          id="error"
+        >
           {error}
         </p>
         <button
