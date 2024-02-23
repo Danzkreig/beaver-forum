@@ -6,19 +6,19 @@ app.use(cors());
 app.use(express.json());
 let arr = [
   {
-    name: "fafaa",
-    age: 33,
-    password: "password",
+    name: "Admin",
+    age: 13,
+    password: "Forgotten",
     id: 1,
   },
   {
-    name: "ooo",
-    age: 16,
+    name: "rappa2004",
+    age: 20,
     password: "newyork2011",
     id: 2,
   },
   {
-    name: "king",
+    name: "kingston333",
     age: 23,
     password: "robotdog330",
     id: 3,

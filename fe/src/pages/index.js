@@ -12,7 +12,7 @@ export default function Mario() {
         response.json().then((response) => setUserdata(response))
       );
       console.log("Working");
-    }, 4000);
+    }, 1000);
     return () => clearInterval(interval);
   }, [error]);
   useEffect(() => {
@@ -32,14 +32,14 @@ export default function Mario() {
   });
   var editmode = false;
   return (
-    <div className="flex justify-center items-center w-screen h-screen flex-col gap-24">
-      <div className="w-2/5 h-2/5 bg-slate-300 rounded-lg flex items-center flex-col justify-around">
-        <h1>Sign Up!</h1>
+    <div className="flex justify-center items-center w-screen h-screen flex-col gap-24 from-blue-300 to-blue-700  bg-gradient-to-r">
+      <div className="w-2/5 h-2/5 bg-white rounded-lg flex items-center flex-col justify-around">
+        <h1 className="text-4xl text-blue-600">Sign Up!</h1>
         <div>
-          <tag>Username:</tag>
           <input
+            className="shadow-sm border-[1px] border-solid border-gray-400"
             type="text"
-            placeholder="ZzOzZ"
+            placeholder="Username"
             id="username"
             onChange={(e) => {
               setUsername(e.target.value);
@@ -47,13 +47,12 @@ export default function Mario() {
           />
         </div>
         <div>
-          <tag>Age:</tag>
           <input
+            className="shadow-sm border-[1px] border-solid border-gray-400 w-44"
             type="number"
-            placeholder=""
+            placeholder="Age"
             min="13"
             max="99"
-            className="w-32"
             id="age"
             onChange={(e) => {
               setAge(e.target.value);
@@ -61,10 +60,10 @@ export default function Mario() {
           />
         </div>
         <div>
-          <tag>Password:</tag>
           <input
+            className="shadow-sm border-[1px] border-solid border-gray-400"
             type="password"
-            placeholder=""
+            placeholder="Password"
             id="password"
             onChange={(e) => {
               setPassword(e.target.value);
@@ -72,10 +71,10 @@ export default function Mario() {
           />
         </div>
         <div>
-          <tag>Confirm Password:</tag>
           <input
+            className="shadow-sm border-[1px] border-solid border-gray-400"
             type="password"
-            placeholder=""
+            placeholder="Confirm Password"
             id="cpassword"
             onChange={(e) => {
               setcPassword(e.target.value);
@@ -110,8 +109,8 @@ export default function Mario() {
       <div className="flex flex-row">
         {userdata.map((profile) => {
           return (
-            <div className="flex flex-row ">
-              <div className="flex flex-col h-[125px] w-[125px] bg-black pt-3 pb-3 text-white rounded items-center justify-center ">
+            <div className="flex flex-col md:flex-row">
+              <div className="flex flex-col h-[150px]  bg-black p-3 text-white rounded items-center justify-center ">
                 <div className="flex flex-row">
                   <h1>username:</h1>
                   <h1 className={profile.id + "p"} contentEditable="true">
