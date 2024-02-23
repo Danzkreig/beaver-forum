@@ -7,14 +7,14 @@ export default function Mario() {
   const [error, setError] = useState("");
   const [userdata, setUserdata] = useState([]);
   useEffect(() => {
-    setInterval(() => {
+    const interval = setInterval(() => {
       fetch("http://localhost:8080/users").then((response) =>
         response.json().then((response) => setUserdata(response))
       );
       console.log("Working");
-    }, 4000),
-      [];
-  }, []);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [error]);
   useEffect(() => {
     if (age < 13) {
       setError("You must be older then 13.");
@@ -30,6 +30,7 @@ export default function Mario() {
       setError("");
     }
   });
+  var editmode = false;
   return (
     <div className="flex justify-center items-center w-screen h-screen flex-col gap-24">
       <div className="w-2/5 h-2/5 bg-slate-300 rounded-lg flex items-center flex-col justify-around">
@@ -106,22 +107,28 @@ export default function Mario() {
           Confirm!
         </button>
       </div>
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-row">
         {userdata.map((profile) => {
           return (
             <div className="flex flex-row ">
-              <div className="flex flex-col h-[150px] w-[150px] bg-black pt-3 pb-3 text-white rounded items-center justify-center ">
+              <div className="flex flex-col h-[125px] w-[125px] bg-black pt-3 pb-3 text-white rounded items-center justify-center ">
                 <div className="flex flex-row">
                   <h1>username:</h1>
-                  <h1>{profile.name}</h1>
+                  <h1 className={profile.id + "p"} contentEditable="true">
+                    {profile.name}
+                  </h1>
                 </div>
                 <div className="flex flex-row">
                   <h1>age:</h1>
-                  <h1>{profile.age}</h1>
+                  <h1 className={profile.id + "p"} contentEditable="true">
+                    {profile.age}
+                  </h1>
                 </div>
                 <div className="flex flex-row">
                   <h1>password:</h1>
-                  <h1>{profile.password}</h1>
+                  <h1 className={profile.id + "p"} contentEditable="true">
+                    {profile.password}
+                  </h1>
                 </div>
               </div>
               <div className="flex flex-col gap-4">
@@ -134,17 +141,42 @@ export default function Mario() {
                         "Content-Type": "application/json",
                       },
                       body: JSON.stringify({
-                        name: profile.name,
+                        id: profile.id,
                       }),
                     });
-                    console.log("Deleted" + profile.name);
+                    console.log("Deleted " + profile.name);
                     setError("");
                   }}
                 >
                   DEL
                 </button>
-                <button className="rounded bg-green-700 text-white p-2">
-                  EDIT
+
+                <button
+                  className="rounded bg-green-700 text-white p-2"
+                  onClick={() => {
+                    fetch("http://localhost:8080/users", {
+                      method: "PATCH",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        name: document.getElementsByClassName(
+                          profile.id + "p"
+                        )[0].innerText,
+                        age: document.getElementsByClassName(
+                          profile.id + "p"
+                        )[1].innerText,
+                        password: document.getElementsByClassName(
+                          profile.id + "p"
+                        )[2].innerText,
+                        id: profile.id,
+                      }),
+                    });
+                    console.log("Patched " + profile.name);
+                    setError("");
+                  }}
+                >
+                  UPDATE
                 </button>
               </div>
             </div>
