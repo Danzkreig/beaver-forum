@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import fs from "fs";
+import { uuid } from "uuidv4";
 const app = express();
 const port = 8080;
 app.use(cors());
@@ -48,9 +49,6 @@ function editData(type, data) {
     });
   }
 }
-var stringed = JSON.stringify(getData());
-var usable = JSON.parse(stringed);
-var identify = parseInt(usable[usable.length - 1].id) + 1;
 app.get("/users", (request, response) => {
   response.statusCode = 200;
   response.json(getData());
@@ -58,8 +56,7 @@ app.get("/users", (request, response) => {
 });
 app.post("/users", (request, response) => {
   let shaft = request.body;
-  shaft.id = identify;
-  identify++;
+  shaft.id = uuid();
   editData("post", JSON.stringify(shaft));
   console.log(identify);
   response.sendStatus(200);
