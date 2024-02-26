@@ -1,21 +1,18 @@
 import { useState, useEffect } from "react";
-export default function Mario() {
+export default function Login() {
   const [username, setUsername] = useState("");
   const [age, setAge] = useState(13);
   const [password, setPassword] = useState("");
   const [cpassword, setcPassword] = useState("");
   const [error, setError] = useState("");
   const [userdata, setUserdata] = useState([]);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetch("http://localhost:8080/users").then((response) =>
-        response.json().then((response) => setUserdata(response))
-      );
-      console.log("Working");
-    }, 500);
-    return () => clearInterval(interval);
-  }, [error]);
-  useEffect(() => {
+  async function refreshData() {
+    await fetch("http://localhost:8080/users").then((response) =>
+      response.json().then((response) => setUserdata(response))
+    );
+  }
+
+  function validateInput() {
     if (age < 13) {
       setError("You must be older then 13.");
     } else if (age > 99) {
@@ -29,9 +26,83 @@ export default function Mario() {
     } else {
       setError("");
     }
-  });
+  }
+  function postData() {
+    if (error === "") {
+      fetch("http://localhost:8080/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: username,
+          age: parseInt(age),
+          password: password,
+        }),
+      });
+      console.log("all good");
+    }
+    refreshData();
+  }
+  function delData(id) {
+    fetch("http://localhost:8080/users", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    });
+    console.log("Deleted " + id);
+    refreshData();
+  }
+  function patchData(id, name, pass, age) {
+    fetch("http://localhost:8080/users", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name,
+        age: age,
+        password: pass,
+        id: id,
+      }),
+    });
+    console.log("Patched " + id);
+    let patch = document.getElementById(id + "patch");
+    let editable = document.getElementsByClassName(id);
+    let edit = document.getElementById(id + "edit");
+    edit.classList.remove("hidden");
+    patch.classList.add("hidden");
+    editable[0].setAttribute("contentEditable", "false");
+    editable[1].setAttribute("contentEditable", "false");
+    editable[2].setAttribute("contentEditable", "false");
+    refreshData();
+  }
+  function editData(id) {
+    let patch = document.getElementById(id + "patch");
+    let editable = document.getElementsByClassName(id);
+    let edit = document.getElementById(id + "edit");
+    edit.classList.add("hidden");
+    patch.classList.remove("hidden");
+    editable[0].setAttribute("contentEditable", "true");
+    editable[1].setAttribute("contentEditable", "true");
+    editable[2].setAttribute("contentEditable", "true");
+    refreshData();
+  }
+  useEffect(() => {
+    refreshData();
+    console.log("shit");
+  }, []);
   return (
-    <div className="flex justify-center items-center w-screen h-screen flex-col gap-24 from-blue-300 to-blue-700  bg-gradient-to-r">
+    <div
+      className="flex justify-center items-center w-screen h-screen flex-col gap-24 from-blue-300 to-blue-700  bg-gradient-to-r"
+      onLoad={() => {
+        refreshData();
+      }}
+    >
       <div className="w-2/5 h-2/5 bg-transparent rounded-lg flex items-center flex-col justify-around">
         <h1 className="text-4xl text-blue-900">Sign Up!</h1>
         <div>
@@ -80,29 +151,15 @@ export default function Mario() {
             }}
           />
         </div>
-        <p
-          className="text-red-500 text-sm shadow rounded p-1 bg-black"
-          id="error"
-        >
+        <p className="text-red-500 text-sm shadow rounded  bg-black" id="error">
           {error}
         </p>
         <button
           className="bg-blue-700 rounded text-white pr-1 pl-1"
           onClick={() => {
-            if (error === "") {
-              fetch("http://localhost:8080/users", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  name: username,
-                  age: parseInt(age),
-                  password: password,
-                }),
-              });
-              console.log("all good");
-            }
+            validateInput();
+            postData();
+            refreshData();
           }}
         >
           Confirm!
@@ -113,21 +170,34 @@ export default function Mario() {
           return (
             <div className="flex flex-col mr-3">
               <div className="flex flex-col h-[150px]  bg-green-500 p-3 text-white rounded items-center justify-center ">
+                <h1>Edit Mode Enabled</h1>
                 <div className="flex flex-row">
                   <h1>username:</h1>
-                  <h1 className={profile.id} contentEditable="false">
+                  <h1
+                    className={profile.id}
+                    contentEditable="false"
+                    suppressContentEditableWarning={true}
+                  >
                     {profile.name}
                   </h1>
                 </div>
                 <div className="flex flex-row">
                   <h1>age:</h1>
-                  <h1 className={profile.id} contentEditable="false">
+                  <h1
+                    className={profile.id}
+                    contentEditable="false"
+                    suppressContentEditableWarning={true}
+                  >
                     {profile.age}
                   </h1>
                 </div>
                 <div className="flex flex-row">
                   <h1>password:</h1>
-                  <h1 className={profile.id} contentEditable="false">
+                  <h1
+                    className={profile.id}
+                    contentEditable="false"
+                    suppressContentEditableWarning={true}
+                  >
                     {profile.password}
                   </h1>
                 </div>
@@ -136,17 +206,7 @@ export default function Mario() {
                 <button
                   className="rounded bg-green-700 text-white p-2"
                   onClick={() => {
-                    fetch("http://localhost:8080/users", {
-                      method: "DELETE",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        id: profile.id,
-                      }),
-                    });
-                    console.log("Deleted " + profile.name);
-                    setError("");
+                    delData(profile.id);
                   }}
                 >
                   DEL
@@ -154,14 +214,7 @@ export default function Mario() {
                 <button
                   className="rounded bg-green-700 text-white p-2"
                   onClick={() => {
-                    let patch = document.getElementById(profile.id + "patch");
-                    let editable = document.getElementsByClassName(profile.id);
-                    let edit = document.getElementById(profile.id + "edit");
-                    edit.classList.add("hidden");
-                    patch.classList.remove("hidden");
-                    editable[0].setAttribute("contentEditable", "true");
-                    editable[1].setAttribute("contentEditable", "true");
-                    editable[2].setAttribute("contentEditable", "true");
+                    editData(profile.id);
                   }}
                   id={profile.id + "edit"}
                 >
@@ -171,31 +224,12 @@ export default function Mario() {
                   className="rounded bg-green-700 text-white p-2 hidden"
                   id={profile.id + "patch"}
                   onClick={() => {
-                    fetch("http://localhost:8080/users", {
-                      method: "PATCH",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        name: document.getElementsByClassName(profile.id)[0]
-                          .innerText,
-                        age: document.getElementsByClassName(profile.id)[1]
-                          .innerText,
-                        password: document.getElementsByClassName(profile.id)[2]
-                          .innerText,
-                        id: profile.id,
-                      }),
-                    });
-                    console.log("Patched " + profile.name);
-                    setError("");
-                    let patch = document.getElementById(profile.id + "patch");
-                    let editable = document.getElementsByClassName(profile.id);
-                    let edit = document.getElementById(profile.id + "edit");
-                    edit.classList.remove("hidden");
-                    patch.classList.add("hidden");
-                    editable[0].setAttribute("contentEditable", "false");
-                    editable[1].setAttribute("contentEditable", "false");
-                    editable[2].setAttribute("contentEditable", "false");
+                    patchData(
+                      profile.id,
+                      profile.name,
+                      profile.password,
+                      profile.age
+                    );
                   }}
                 >
                   UPDATE
