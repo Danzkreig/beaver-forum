@@ -19,7 +19,7 @@ function editData(type, data) {
       if (err) {
         console.log(err);
       } else {
-        console.log("all good");
+        console.log("Post working");
       }
     });
   } else if (type === "delete") {
@@ -35,9 +35,9 @@ function editData(type, data) {
     main = JSON.stringify(main);
     main = JSON.parse(main);
     let pro = JSON.parse(data);
-    let objIndex = main.findIndex((obj) => obj.id == pro.id);
+    let objIndex = main.findIndex((obj) => obj.id == pro.id); // TODO: Find better way.
     main[objIndex].name = pro.name;
-    main[objIndex].age = pro.age;
+    main[objIndex].age = parseInt(pro.age);
     main[objIndex].password = pro.password;
     fs.writeFile("poop.json", JSON.stringify(main), (err) => {
       if (err) {

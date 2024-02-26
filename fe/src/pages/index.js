@@ -12,7 +12,7 @@ export default function Mario() {
         response.json().then((response) => setUserdata(response))
       );
       console.log("Working");
-    }, 1000);
+    }, 500);
     return () => clearInterval(interval);
   }, [error]);
   useEffect(() => {
@@ -30,7 +30,6 @@ export default function Mario() {
       setError("");
     }
   });
-  var editmode = false;
   return (
     <div className="flex justify-center items-center w-screen h-screen flex-col gap-24 from-blue-300 to-blue-700  bg-gradient-to-r">
       <div className="w-2/5 h-2/5 bg-transparent rounded-lg flex items-center flex-col justify-around">
@@ -112,28 +111,28 @@ export default function Mario() {
       <div className="flex flex-row">
         {userdata.map((profile) => {
           return (
-            <div className="flex flex-col md:flex-row">
-              <div className="flex flex-col h-[150px]  bg-black p-3 text-white rounded items-center justify-center ">
+            <div className="flex flex-col mr-3">
+              <div className="flex flex-col h-[150px]  bg-green-500 p-3 text-white rounded items-center justify-center ">
                 <div className="flex flex-row">
                   <h1>username:</h1>
-                  <h1 className={profile.id + "p"} contentEditable="true">
+                  <h1 className={profile.id} contentEditable="false">
                     {profile.name}
                   </h1>
                 </div>
                 <div className="flex flex-row">
                   <h1>age:</h1>
-                  <h1 className={profile.id + "p"} contentEditable="true">
+                  <h1 className={profile.id} contentEditable="false">
                     {profile.age}
                   </h1>
                 </div>
                 <div className="flex flex-row">
                   <h1>password:</h1>
-                  <h1 className={profile.id + "p"} contentEditable="true">
+                  <h1 className={profile.id} contentEditable="false">
                     {profile.password}
                   </h1>
                 </div>
               </div>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-row gap-2 justify-around relative bottom-8">
                 <button
                   className="rounded bg-green-700 text-white p-2"
                   onClick={() => {
@@ -152,9 +151,25 @@ export default function Mario() {
                 >
                   DEL
                 </button>
-
                 <button
                   className="rounded bg-green-700 text-white p-2"
+                  onClick={() => {
+                    let patch = document.getElementById(profile.id + "patch");
+                    let editable = document.getElementsByClassName(profile.id);
+                    let edit = document.getElementById(profile.id + "edit");
+                    edit.classList.add("hidden");
+                    patch.classList.remove("hidden");
+                    editable[0].setAttribute("contentEditable", "true");
+                    editable[1].setAttribute("contentEditable", "true");
+                    editable[2].setAttribute("contentEditable", "true");
+                  }}
+                  id={profile.id + "edit"}
+                >
+                  EDIT
+                </button>
+                <button
+                  className="rounded bg-green-700 text-white p-2 hidden"
+                  id={profile.id + "patch"}
                   onClick={() => {
                     fetch("http://localhost:8080/users", {
                       method: "PATCH",
@@ -162,20 +177,25 @@ export default function Mario() {
                         "Content-Type": "application/json",
                       },
                       body: JSON.stringify({
-                        name: document.getElementsByClassName(
-                          profile.id + "p"
-                        )[0].innerText,
-                        age: document.getElementsByClassName(
-                          profile.id + "p"
-                        )[1].innerText,
-                        password: document.getElementsByClassName(
-                          profile.id + "p"
-                        )[2].innerText,
+                        name: document.getElementsByClassName(profile.id)[0]
+                          .innerText,
+                        age: document.getElementsByClassName(profile.id)[1]
+                          .innerText,
+                        password: document.getElementsByClassName(profile.id)[2]
+                          .innerText,
                         id: profile.id,
                       }),
                     });
                     console.log("Patched " + profile.name);
                     setError("");
+                    let patch = document.getElementById(profile.id + "patch");
+                    let editable = document.getElementsByClassName(profile.id);
+                    let edit = document.getElementById(profile.id + "edit");
+                    edit.classList.remove("hidden");
+                    patch.classList.add("hidden");
+                    editable[0].setAttribute("contentEditable", "false");
+                    editable[1].setAttribute("contentEditable", "false");
+                    editable[2].setAttribute("contentEditable", "false");
                   }}
                 >
                   UPDATE
