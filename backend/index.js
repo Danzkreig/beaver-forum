@@ -65,7 +65,6 @@ app.delete("/users", (request, response) => {
 });
 app.patch("/users", (request, response) => {
   patchData(JSON.stringify(request.body));
-  console.log(request.body);
   response.sendStatus(200);
 });
 app.listen(port, () => {

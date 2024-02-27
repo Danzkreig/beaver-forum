@@ -55,27 +55,31 @@ export default function Login() {
       }),
     });
     console.log("Deleted " + id);
+    let main = document.getElementById(id + "main");
+    main.classList.add("hidden");
     refreshData();
   }
-  function patchData(id, name, pass, age) {
+  function patchData(id) {
+    let patch = document.getElementById(id + "patch");
+    let editable = document.getElementsByClassName(id);
+    let em = document.getElementById(id + "em");
+    let edit = document.getElementById(id + "edit");
     fetch("http://localhost:8080/users", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: name,
-        age: age,
-        password: pass,
+        name: editable[0].innerHTML,
+        age: editable[1].innerHTML,
+        password: editable[2].innerHTML,
         id: id,
       }),
     });
     console.log("Patched " + id);
-    let patch = document.getElementById(id + "patch");
-    let editable = document.getElementsByClassName(id);
-    let edit = document.getElementById(id + "edit");
     edit.classList.remove("hidden");
     patch.classList.add("hidden");
+    em.classList.add("hidden");
     editable[0].setAttribute("contentEditable", "false");
     editable[1].setAttribute("contentEditable", "false");
     editable[2].setAttribute("contentEditable", "false");
@@ -84,9 +88,11 @@ export default function Login() {
   function editData(id) {
     let patch = document.getElementById(id + "patch");
     let editable = document.getElementsByClassName(id);
+    let em = document.getElementById(id + "em");
     let edit = document.getElementById(id + "edit");
     edit.classList.add("hidden");
     patch.classList.remove("hidden");
+    em.classList.remove("hidden");
     editable[0].setAttribute("contentEditable", "true");
     editable[1].setAttribute("contentEditable", "true");
     editable[2].setAttribute("contentEditable", "true");
@@ -94,7 +100,6 @@ export default function Login() {
   }
   useEffect(() => {
     refreshData();
-    console.log("shit");
   }, []);
   return (
     <div
@@ -165,12 +170,22 @@ export default function Login() {
           Confirm!
         </button>
       </div>
+      <button
+        className="rounded bg-green-700 text-white p-2"
+        onClick={() => {
+          refreshData();
+        }}
+      >
+        ⟳
+      </button>
       <div className="flex flex-row">
         {userdata.map((profile) => {
           return (
-            <div className="flex flex-col mr-3">
+            <div className="flex flex-col mr-3" id={profile.id + "main"}>
               <div className="flex flex-col h-[150px]  bg-green-500 p-3 text-white rounded items-center justify-center ">
-                <h1>Edit Mode Enabled</h1>
+                <h1 id={profile.id + "em"} className="hidden">
+                  Edit Mode Enabled
+                </h1>
                 <div className="flex flex-row">
                   <h1>username:</h1>
                   <h1
