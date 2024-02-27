@@ -30,20 +30,16 @@ function deleteData(data) {
     }
   });
 }
-function patchData(data) {
+function patchData(data, response) {
   var main = parsedDB;
-  main = JSON.stringify(main);
-  main = JSON.parse(main);
-  let pro = JSON.parse(data);
-  let objIndex = main.findIndex((obj) => obj.id == pro.id); // TODO: Find better way.
-  main[objIndex].name = pro.name;
-  main[objIndex].age = parseInt(pro.age);
-  main[objIndex].password = pro.password;
+  let transformer = JSON.parse(data);
+  main = main.filter((obj) => obj.id != transformer.id);
+  main.push(transformer);
   fs.writeFile("db.json", JSON.stringify(main), (err) => {
     if (err) {
-      console.log("bad");
+      console.log(err);
     } else {
-      console.log("ok");
+      return "all good";
     }
   });
 }

@@ -62,40 +62,40 @@ export default function Login() {
   function patchData(id) {
     let patch = document.getElementById(id + "patch");
     let editable = document.getElementsByClassName(id);
-    let em = document.getElementById(id + "em");
     let edit = document.getElementById(id + "edit");
+    document.querySelectorAll("." + id).forEach((el) => {
+      if (el.value === "") {
+        el.setAttribute("value", el.getAttribute("placeholder"));
+      } else {
+        el.setAttribute("placeholder", el.value);
+      }
+      el.setAttribute("disabled", true);
+    });
+    edit.classList.remove("hidden");
+    patch.classList.add("hidden");
     fetch("http://localhost:8080/users", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: editable[0].innerHTML,
-        age: editable[1].innerHTML,
-        password: editable[2].innerHTML,
+        name: editable[0].getAttribute("placeholder"),
+        age: editable[1].getAttribute("placeholder"),
+        password: editable[2].getAttribute("placeholder"),
         id: id,
       }),
     });
-    console.log("Patched " + id);
-    edit.classList.remove("hidden");
-    patch.classList.add("hidden");
-    em.classList.add("hidden");
-    editable[0].setAttribute("contentEditable", "false");
-    editable[1].setAttribute("contentEditable", "false");
-    editable[2].setAttribute("contentEditable", "false");
+
     refreshData();
   }
   function editData(id) {
     let patch = document.getElementById(id + "patch");
-    let editable = document.getElementsByClassName(id);
-    let em = document.getElementById(id + "em");
     let edit = document.getElementById(id + "edit");
     edit.classList.add("hidden");
     patch.classList.remove("hidden");
-    em.classList.remove("hidden");
-    editable[0].setAttribute("contentEditable", "true");
-    editable[1].setAttribute("contentEditable", "true");
-    editable[2].setAttribute("contentEditable", "true");
+    document.querySelectorAll("." + id).forEach((el) => {
+      el.removeAttribute("disabled");
+    });
     refreshData();
   }
   useEffect(() => {
@@ -182,39 +182,33 @@ export default function Login() {
         {userdata.map((profile) => {
           return (
             <div className="flex flex-col mr-3" id={profile.id + "main"}>
-              <div className="flex flex-col h-[150px]  bg-green-500 p-3 text-white rounded items-center justify-center ">
-                <h1 id={profile.id + "em"} className="hidden">
-                  Edit Mode Enabled
-                </h1>
+              <div className="flex flex-col h-[150px]  bg-green-500 p-3 text-white *:text-black *:*:placeholder:text-black rounded items-center justify-center ">
                 <div className="flex flex-row">
                   <h1>username:</h1>
-                  <h1
+                  <input
                     className={profile.id}
-                    contentEditable="false"
-                    suppressContentEditableWarning={true}
-                  >
-                    {profile.name}
-                  </h1>
+                    type="text"
+                    placeholder={profile.name}
+                    disabled
+                  />
                 </div>
                 <div className="flex flex-row">
                   <h1>age:</h1>
-                  <h1
+                  <input
+                    type="number"
                     className={profile.id}
-                    contentEditable="false"
-                    suppressContentEditableWarning={true}
-                  >
-                    {profile.age}
-                  </h1>
+                    placeholder={profile.age}
+                    disabled
+                  />
                 </div>
                 <div className="flex flex-row">
                   <h1>password:</h1>
-                  <h1
+                  <input
                     className={profile.id}
-                    contentEditable="false"
-                    suppressContentEditableWarning={true}
-                  >
-                    {profile.password}
-                  </h1>
+                    type="text"
+                    placeholder={profile.password}
+                    disabled
+                  />
                 </div>
               </div>
               <div className="flex flex-row gap-2 justify-around relative bottom-8">
